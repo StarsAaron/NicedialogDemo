@@ -28,17 +28,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showDialog(String title) {
-//        niceDialog = NiceDialog.createProgressDialog(getSupportFragmentManager(), title);
-//        niceDialog = NiceDialog.createDialogWithConfirmButton(getSupportFragmentManager()
-//                , title, new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        niceDialog.dismiss();
-//                    }
-//                });
-        niceDialog = NiceDialog.createDialogWithAllFunction(getSupportFragmentManager()
-                , title, "34343"
-                , view -> Toast.makeText(MainActivity.this,"点击了取消",Toast.LENGTH_SHORT).show()
-                , view -> Toast.makeText(MainActivity.this,"点击了ok",Toast.LENGTH_SHORT).show());
+//        niceDialog = NiceDialog.createProgressDialog(this,getSupportFragmentManager(), title);
+        niceDialog = NiceDialog.createDialogWithConfirmButton(this,getSupportFragmentManager()
+                , title, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        niceDialog.dismiss();
+                    }
+                });
+//        niceDialog = NiceDialog.createDialogWithAllFunction(this,getSupportFragmentManager()
+//                , title, "34343"
+//                , view -> Toast.makeText(MainActivity.this,"点击了取消",Toast.LENGTH_SHORT).show()
+//                , view -> Toast.makeText(MainActivity.this,"点击了ok",Toast.LENGTH_SHORT).show());
     }
 }

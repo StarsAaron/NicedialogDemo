@@ -1,6 +1,8 @@
 package com.aaron.nicedialoglibrary;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +16,12 @@ import androidx.annotation.StyleRes;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.aaron.nicedialoglibrary.utils.Utils;
-
 
 /**
  * DialogFragment 实现的对话框
  *
  * 使用方法：
- * NiceDialog.init()
+ *      new NiceDialog(context)
  *                 .setLayoutId(R.layout.confirm_layout)
  *                 .setDimAmount(0)
  *                 .setMargin(60)
@@ -49,15 +49,15 @@ import com.aaron.nicedialoglibrary.utils.Utils;
  *                 .show(getSupportFragmentManager());
  *
  * 几个内置的默认实现：
- * dialog = NiceDialog.createProgressDialog(getSupportFragmentManager(), title);
- * dialog = NiceDialog.createDialogWithConfirmButton(getSupportFragmentManager()
+ * dialog = NiceDialog.createProgressDialog(context,getSupportFragmentManager(), title);
+ * dialog = NiceDialog.createDialogWithConfirmButton(context,getSupportFragmentManager()
  *         , title, new View.OnClickListener() {
  *             @Override
  *             public void onClick(View view) {
  *                 dialog.dismiss();
  *             }
  *         });
- * dialog = NiceDialog.createDialogWithAllFunction(getSupportFragmentManager()
+ * dialog = NiceDialog.createDialogWithAllFunction(context,getSupportFragmentManager()
  *         , title, "34343", new View.OnClickListener() {
  *             @Override
  *             public void onClick(View view) {
@@ -86,6 +86,7 @@ public class NiceDialog extends DialogFragment {
     private float dimAmount = 0.5f;//灰度深浅
     private boolean showBottom;//是否底部显示
     private boolean outCancel = true;//是否点击外部取消
+    private Context context;
 
     @StyleRes
     private int animStyle; //动画
@@ -94,23 +95,9 @@ public class NiceDialog extends DialogFragment {
 
     private ViewConvertListener convertListener;//视图初始化监听
 
-    public NiceDialog() {
-        try {
-            throw new IllegalAccessException("使用静态init()方法新建实例");
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+    public NiceDialog(Context context) {
+        this.context = context;
     }
-
-    /**
-     * 初始化方法
-     *
-     * @return
-     */
-    public static NiceDialog init() {
-        return new NiceDialog();
-    }
-
 
     /**
      * 创建进度圆环对话框
@@ -119,8 +106,8 @@ public class NiceDialog extends DialogFragment {
      * @param fragmentManager
      * @return
      */
-    public static NiceDialog createProgressDialog(FragmentManager fragmentManager, String content){
-        return NiceDialog.init()
+    public static NiceDialog createProgressDialog(Context context,FragmentManager fragmentManager, String content){
+        return new NiceDialog(context)
                 .setLayoutId(R.layout.dialog_progress)
                 .setMargin(60)
                 .setOutCancel(false)
@@ -137,9 +124,9 @@ public class NiceDialog extends DialogFragment {
      * @param content
      * @return
      */
-    public static NiceDialog createDialogWithConfirmButton(FragmentManager fragmentManager
+    public static NiceDialog createDialogWithConfirmButton(Context context,FragmentManager fragmentManager
             , String content, View.OnClickListener okListener){
-        return NiceDialog.init()
+        return new NiceDialog(context)
                 .setLayoutId(R.layout.dialog_simple)
                 .setMargin(60)
                 .setOutCancel(true)
@@ -161,10 +148,10 @@ public class NiceDialog extends DialogFragment {
      * @param okListener
      * @return
      */
-    public static NiceDialog createDialogWithAllFunction(FragmentManager fragmentManager
+    public static NiceDialog createDialogWithAllFunction(Context context,FragmentManager fragmentManager
             , String title, String message, View.OnClickListener cancelListener
             , View.OnClickListener okListener){
-        return NiceDialog.init()
+        return new NiceDialog(context)
                 .setLayoutId(R.layout.dialog_confirm)
                 .setMargin(60)
                 .setOutCancel(true)
@@ -253,15 +240,15 @@ public class NiceDialog extends DialogFragment {
 
             //设置dialog宽度
             if (width == 0) {
-                lp.width = Utils.getScreenWidth(getContext()) - 2 * Utils.dp2px(getContext(), margin);
+                lp.width = getScreenWidth() - 2 * dp2px(margin);
             } else {
-                lp.width = Utils.dp2px(getContext(), width);
+                lp.width = dp2px(width);
             }
             //设置dialog高度
             if (height == 0) {
                 lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
             } else {
-                lp.height = Utils.dp2px(getContext(), height);
+                lp.height = dp2px(height);
             }
 
             //设置dialog进入、退出的动画
@@ -269,6 +256,16 @@ public class NiceDialog extends DialogFragment {
             window.setAttributes(lp);
         }
         setCancelable(outCancel);
+    }
+
+    private int dp2px(float dipValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale + 0.5f);
+    }
+
+    private int getScreenWidth() {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return displayMetrics.widthPixels;
     }
 
     /**

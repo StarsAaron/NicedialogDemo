@@ -1,5 +1,5 @@
 ﻿使用方法：
-NiceDialog.init()
+   new NiceDialog(context)
                 .setLayoutId(R.layout.ad_layout)
                 .setConvertListener(new ViewConvertListener() {
                     @Override
@@ -18,7 +18,7 @@ NiceDialog.init()
                 .show(getSupportFragmentManager());
 
 
-NiceDialog.init()
+   new NiceDialog(context)
                 .setLayoutId(R.layout.confirm_layout)
                 .setDimAmount(0)
                 .setMargin(60)
@@ -46,15 +46,15 @@ NiceDialog.init()
                 .show(getSupportFragmentManager());
 
 几个内置的默认实现：
-dialog = NiceDialog.createProgressDialog(getSupportFragmentManager(), title);
-dialog = NiceDialog.createDialogWithConfirmButton(getSupportFragmentManager()
+dialog = NiceDialog.createProgressDialog(context,getSupportFragmentManager(), title);
+dialog = NiceDialog.createDialogWithConfirmButton(context,getSupportFragmentManager()
         , title, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
             }
         });
-dialog = NiceDialog.createDialogWithAllFunction(getSupportFragmentManager()
+dialog = NiceDialog.createDialogWithAllFunction(context,getSupportFragmentManager()
         , title, "34343", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
