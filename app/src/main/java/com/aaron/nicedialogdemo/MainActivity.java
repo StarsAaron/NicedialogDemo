@@ -18,13 +18,17 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_dialog).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(niceDialog != null){
-                    niceDialog.dismiss();
-                    niceDialog = null;
-                }
+                dismissDialog();
                 showDialog("dddddd");
             }
         });
+    }
+
+    private void dismissDialog(){
+        if(niceDialog != null){
+            niceDialog.dismiss();
+            niceDialog = null;
+        }
     }
 
     public void showDialog(String title) {
@@ -33,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 , title, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        niceDialog.dismiss();
+                        dismissDialog();
                     }
                 });
 //        niceDialog = NiceDialog.createDialogWithAllFunction(this,getSupportFragmentManager()

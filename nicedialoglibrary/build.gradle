@@ -47,13 +47,13 @@ dependencies {
  **/
 apply plugin: 'com.novoda.bintray-release'// 在apply plugin: 'com.android.library'之后
 //项目主页
-def siteUrl = 'https://github.com/StarsAaron/AndroidBaseMVVMLibrary'
+def siteUrl = 'https://github.com/StarsAaron/NicedialogDemo'
 publish{
     userOrg = 'aaronstars'//bintray.com的用户名
     repoName = 'android-library'//远程仓库名字,不指明，默认是上传到maven
     groupId = 'com.aaron'//jcenter上的路径
     artifactId = 'AndroidNiceDialogLibrary'//项目名称
-    publishVersion = '1.0.0'//版本号
+    publishVersion = '1.0.3'//版本号
     desc = 'An android dialog library use DialogFragment'//描述，不重要
     website = siteUrl//项目主页
 }

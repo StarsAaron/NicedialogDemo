@@ -10,65 +10,61 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.lang.ref.WeakReference;
+
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
+/*
+new NiceDialog(context)
+    .setLayoutId(R.layout.dialog)     //设置dialog布局文件
+    .setTheme(R.style.MyDialog) // 设置dialog主题，默认主题继承自Theme.AppCompat.Light.Dialog
+    .setConvertListener(new ViewConvertListener() {     //进行相关View操作的回调
+        @Override
+        public void convertView(ViewHolder holder, final BaseNiceDialog dialog) {
+            holder.setText(R.id.title, "提示");
+            holder.setText(R.id.message, "简单提示框");
+        }
+    })
+    .setDimAmount(0.3f)  //调节灰色背景透明度[0-1]，默认0.5f
+    .setGravity()     //可选，设置dialog的位置，默认居中，可通过系统Gravity的类的常量修改，例如Gravity.BOTTOM（底部），Gravity.Right（右边），Gravity.BOTTOM|Gravity.Right（右下）
+    .setMargin()     //dialog左右两边到屏幕边缘的距离（单位：dp），默认0dp
+    .setWidth()     //dialog宽度（单位：dp），默认为屏幕宽度，-1代表WRAP_CONTENT
+    .setHeight()     //dialog高度（单位：dp），默认为WRAP_CONTENT
+    .setOutCancel(false)     //点击dialog外是否可取消，默认true
+    .setAnimStyle(R.style.EnterExitAnimation)     //设置dialog进入、退出的自定义动画；根据设置的Gravity，默认提供了左、上、右、下位置进入退出的动画
+    .show(getSupportFragmentManager());     //显示dialog
 
+几个内置的默认实现：
+dialog = NiceDialog.createProgressDialog(context,getSupportFragmentManager(), title);
+dialog = NiceDialog.createDialogWithConfirmButton(context,getSupportFragmentManager()
+        , title, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                dialog = null;
+            }
+        });
+dialog = NiceDialog.createDialogWithAllFunction(context,getSupportFragmentManager()
+        , title, "34343", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ToastUtils.showShort("点击了取消");
+            }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ToastUtils.showShort("点击了ok");
+            }
+        });
+ */
 /**
  * DialogFragment 实现的对话框
  *
- * 使用方法：
- *      new NiceDialog(context)
- *                 .setLayoutId(R.layout.confirm_layout)
- *                 .setDimAmount(0)
- *                 .setMargin(60)
- *                 .setOutCancel(false)
- *                 .setConvertListener(new ViewConvertListener() {
- *                     @Override
- *                     public void convertView(ViewHolder holder, final NiceDialog dialog) {
- *                         holder.setText(R.id.title, "提示");
- *                         holder.setText(R.id.message, "简单提示框");
- *                         holder.setOnClickListener(R.id.cancel, new View.OnClickListener() {
- *                             @Override
- *                             public void onClick(View v) {
- *                                 dialog.dismiss();
- *                             }
- *                         });
- *
- *                         holder.setOnClickListener(R.id.ok, new View.OnClickListener() {
- *                             @Override
- *                             public void onClick(View v) {
- *                                 dialog.dismiss();
- *                             }
- *                         });
- *                     }
- *                 })
- *                 .show(getSupportFragmentManager());
- *
- * 几个内置的默认实现：
- * dialog = NiceDialog.createProgressDialog(context,getSupportFragmentManager(), title);
- * dialog = NiceDialog.createDialogWithConfirmButton(context,getSupportFragmentManager()
- *         , title, new View.OnClickListener() {
- *             @Override
- *             public void onClick(View view) {
- *                 dialog.dismiss();
- *             }
- *         });
- * dialog = NiceDialog.createDialogWithAllFunction(context,getSupportFragmentManager()
- *         , title, "34343", new View.OnClickListener() {
- *             @Override
- *             public void onClick(View view) {
- *                 ToastUtils.showShort("点击了取消");
- *             }
- *         }, new View.OnClickListener() {
- *             @Override
- *             public void onClick(View view) {
- *                 ToastUtils.showShort("点击了ok");
- *             }
- *         });
+ * https://github.com/SheHuan/NiceDialog
  */
 public class NiceDialog extends DialogFragment {
     private static final String MARGIN = "margin";
@@ -86,7 +82,7 @@ public class NiceDialog extends DialogFragment {
     private float dimAmount = 0.5f;//灰度深浅
     private boolean showBottom;//是否底部显示
     private boolean outCancel = true;//是否点击外部取消
-    private Context context;
+    private WeakReference<Context> context;
 
     @StyleRes
     private int animStyle; //动画
@@ -96,7 +92,7 @@ public class NiceDialog extends DialogFragment {
     private ViewConvertListener convertListener;//视图初始化监听
 
     public NiceDialog(Context context) {
-        this.context = context;
+        this.context = new WeakReference<Context>(context);
     }
 
     /**
@@ -259,12 +255,12 @@ public class NiceDialog extends DialogFragment {
     }
 
     private int dp2px(float dipValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
+        final float scale = context.get().getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
 
     private int getScreenWidth() {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = context.get().getResources().getDisplayMetrics();
         return displayMetrics.widthPixels;
     }
 
